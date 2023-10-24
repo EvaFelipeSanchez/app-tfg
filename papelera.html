@@ -70,7 +70,7 @@
         }
         
 
-        .listaTareas {
+        .listaTareasEliminadas {
             background-color: rgb(163, 186, 217);
             width: 1500px;
             max-height: 70vh; 
@@ -89,7 +89,7 @@
             
         }
 
-        .listaTareas li {
+        .listaTareasEliminadas li {
             list-style-type: none;
             display: flex;
             flex-direction: row; /* Establece la dirección de los elementos como fila */
@@ -100,12 +100,12 @@
             padding: 10px;
         }
 
-        .listaTareas input[type="checkbox"] {
+        .listaTareasEliminadas input[type="checkbox"] {
             margin-right: 10px;
         }
 
         /* Estilos para los campos de información adicional */
-        .listaTareas input[type="text"] {
+        .listaTareasEliminadas input[type="text"] {
             flex: 3; /* Distribuye el espacio disponible de manera uniforme */
             padding: 2px;
             margin: 5px 10px; 
@@ -148,32 +148,38 @@
             margin-right: 0;
         }
 
-        
-        .papelera {
+        .flechavolver {
 
-            margin-bottom: 140px; /* Mueve el elemento hacia arriba 50 píxeles */
-            width: 300px;
+        margin-bottom: 140px; 
+        width: 300px;
 
-            position: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            top: 9%; /* Centrar verticalmente en todos los dispositivos */
-            left: 85%; /* Centrar horizontalmente en todos los dispositivos */
-            transform: translate(-50%, -50%); /* Centrar en la mitad de la pantalla */
-            color: rgb(31, 39, 78);
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 9%; 
+        left: 15%; 
+        transform: translate(-50%, -50%); 
+        color: rgb(31, 39, 78);
 
         }
 
-        .papelera img {
+        .flechavolver img {
         width: 110px;
         height: 110px;
         }
 
+        .textoexplicativo {
+            color: rgb(255, 255, 255);
+            font-family: 'Arial', sans-serif; 
+            font-size: 18px;
+            position: absolute;
+            top: 830px;
+            left: 1120px;
+                
+        }
 
-
-
-      
+              
   </style>
   </head>
     
@@ -184,8 +190,13 @@
       <a href="#"><img src="images/homeicono.png" alt="Icono Tienda"></a>
       <a href="#"><img src="images/ajustesicono.png" alt="Icono Ajustes"></a>
 
-      <!-- Agrega más íconos o imágenes aquí -->
+
   </div>
+
+  <div style="position: relative;">
+    <div class="textoexplicativo" id="textoexplicativo">Las tareas con fecha de hace un mes se borrarán automáticamente</div>
+</div>
+
 
   <div class="content" >
       <!-- Contenido principal de tu página -->
@@ -195,8 +206,6 @@
   </div>
 
   <script>
-
-
       function toggleSidebar() {
           var sidebar = document.getElementById('sidebar');
           if (sidebar.style.left === '0px') {
@@ -209,127 +218,47 @@
 
  <!-- <div class="count" id="countdown"></div>  -->
 
-                                                                                             <!--BORRAR INTERIOR DE LA LISTA DE TAREAS  -->
-    <ul class="listaTareas">
 
+    <ul class="listaTareasEliminadas" id="listaTareasEliminadas">
     </ul>
 
 
-    <form onsubmit="agregarTarea(); return false;" class="nuevaTarea">
-
-        <input type="text" id="nuevaTareaInput" placeholder="Escribe una nueva tarea" required>
-        <input type="text" id="fechaVencimiento" placeholder="Fecha de entrega">
-              
-        <select id="Puntos">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-        <select id="Tipo de tarea">
-            <option value="Examen">Examen</option>
-            <option value="Proyecto">Proyecto</option>
-            <option value="Ejercicio/s">Ejercicio/s</option>
-        </select>
-        <button type="submit">Agregar</button>
-
-    </form>
 
  <script>
-
-
-         let taskIdCounter = 0; //Identificador tareas
-
-         const storedTareas = JSON.parse(localStorage.getItem('tareas')) || [];
-
-        storedTareas.forEach(function (task) {
-            const listaTareas = document.querySelector(".listaTareas");
-            var nuevaTareaLi = document.createElement("div");
-            nuevaTareaLi.classList.add("row");
-            nuevaTareaLi.dataset.taskId = task.id;
-            nuevaTareaLi.innerHTML = `
-                <div class="col-auto"><input type="checkbox" disabled></div>
-                <div class="col"> <label for="tarea1">${task.tarea}</label></div>
-                <div class="col-2">${task.fecha}</div>
-                <div class="col-1">${task.puntos}</div>
-                <div class="col-3">${task.tipoTarea}</div>
-                <div class="col-3"><button class="botoneliminar">Eliminar</button></div>
-            `;
-            listaTareas.appendChild(nuevaTareaLi);
-        });
-
-        ordenarTareasPorFecha();
-                
-
-        const fechaVencimientoInput = document.getElementById('fechaVencimiento');
-            $(fechaVencimientoInput).datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true
-        });
-
-        function agregarTarea() {
-        var nuevaTareaInput = document.getElementById("nuevaTareaInput");
-        var nuevaTarea = nuevaTareaInput.value;
-        var fechaVencimiento = fechaVencimientoInput.value;
-        var puntos = document.getElementById("Puntos").value;
-        var tipotarea = document.getElementById("Tipo de tarea").value;
-
-        if (nuevaTarea.trim() !== "") {
-            taskIdCounter++;
-            var listaTareas = document.querySelector(".listaTareas");
-            var nuevaTareaLi = document.createElement("div");
-            nuevaTareaLi.classList.add("row");
-            nuevaTareaLi.dataset.taskId = taskIdCounter;
-            nuevaTareaLi.innerHTML = `
-                <div class="col-auto"><input type="checkbox" disabled></div>
-                <div class="col"> <label for="tarea1">${nuevaTarea}</label></div>
-                <div class="col-2">${fechaVencimiento}</div>
-                <div class="col-1">${puntos}</div>
-                <div class="col-3">${tipotarea}</div>
-                <div class="col-3"><button class="botoneliminar">Eliminar</button></div>
-            `;
-            listaTareas.appendChild(nuevaTareaLi);
-            nuevaTareaInput.value = "";
-            fechaVencimientoInput.value = "";
-            const botonEliminar = nuevaTareaLi.querySelector(".botoneliminar");
-            botonEliminar.addEventListener('click', function (event) {
-                eliminarTarea(event.target.parentElement.parentElement);
-            });
-
-            const tareas = JSON.parse(localStorage.getItem('tareas')) || [];
-            tareas.push({
-                id: taskIdCounter,
-                tarea: nuevaTarea,
-                fecha: fechaVencimiento,
-                puntos: puntos,
-                tipoTarea: tipotarea
-            });
-            localStorage.setItem('tareas', JSON.stringify(tareas));
-
-            ordenarTareasPorFecha();
-        }
-    }
-
-        const botonesEliminar = document.getElementsByClassName("botoneliminar");
-
-        for (const boton of botonesEliminar) {
-            boton.addEventListener('mousedown', function (event) {
-                console.log('Botón eliminar presionado');
-                eliminarTarea(event.target.parentElement.parentElement);
-            });
-        }
-
+        const tareasEliminadasList = document.querySelector('.listaTareasEliminadas');
         const tareasEliminadas = JSON.parse(localStorage.getItem('tareasEliminadas')) || [];
 
+        eliminarTareasAnterioresAUnMes();
+        ordenarTareasPorFecha(); 
+
+        const botonesRestaurar = document.querySelectorAll(".botonrestaurar");
+
+        botonesRestaurar.forEach(boton => {
+            boton.addEventListener('click', () => {
+                console.log('Botón restaurar presionado');
+                restaurarTarea(boton.parentElement.parentElement);
+            });
+        });
+        function eliminarTareasAnterioresAUnMes() {
+            const fechaActual = new Date();
+            fechaActual.setMonth(fechaActual.getMonth() - 1);
+
+            const fechaLimite = fechaActual.toISOString().slice(0, 10);
+            const tareasEliminadas = Array.from(tareasEliminadasList.querySelectorAll('li'));
+            tareasEliminadas.forEach(tarea => {
+                const fechaTarea = tarea.querySelector('.col-2').textContent;
+                if (fechaTarea <= fechaLimite) {
+                    tarea.remove(); 
+                    eliminarTarea(tarea);
+                }
+            });
+        }
 
         function eliminarTarea(tareaRow) {
-
             const taskId = tareaRow.dataset.taskId;
             const tareas = JSON.parse(localStorage.getItem('tareas')) || [];
             const tareaIndex = tareas.findIndex(task => task.id === parseInt(taskId));
             if (tareaIndex !== -1) {
-
                 tareasEliminadas.push(tareas[tareaIndex]);
                 tareas.splice(tareaIndex, 1);
                 localStorage.setItem('tareas', JSON.stringify(tareas));
@@ -338,7 +267,54 @@
             tareaRow.remove();
         }
 
-        function compararFechas(a, b) {
+        
+        function restaurarTarea(tareaElement) {
+            console.log("Hasta aqui llega");
+            const tarea = {
+                tarea: tareaElement.querySelector('label').textContent,
+                fecha: tareaElement.querySelector('.col-2').textContent,
+                puntos: tareaElement.querySelector('.col-1').textContent,
+                tipoTarea: tareaElement.querySelector('.col-3').textContent,
+            };
+
+            // Agregar la tarea nuevamente a la lista principal
+            const listaTareas = document.querySelector('.listaTareas');
+            const nuevaTareaLi = document.createElement('div');
+            nuevaTareaLi.classList.add('row');
+            nuevaTareaLi.innerHTML = `
+                <div class="col-auto"><input type="checkbox" disabled></div>
+                <div class="col"> <label for="tarea1">${tarea.tarea}</label></div>
+                <div class="col-2">${tarea.fecha}</div>
+                <div class="col-1">${tarea.puntos}</div>
+                <div class="col-3">${tarea.tipoTarea}</div>
+                <div class="col-3"><button class="botoneliminar">Eliminar</button></div>
+            `;
+            listaTareas.appendChild(nuevaTareaLi);
+
+            const tareas = JSON.parse(localStorage.getItem('tareas')) || [];
+            tarea.id = taskIdCounter++; // Asigna un nuevo ID a la tarea restaurada
+            tareas.push(tarea);
+            localStorage.setItem('tareas', JSON.stringify(tareas));
+            tareaElement.remove();
+            eliminarTarea(tareaElement); 
+        }
+
+
+
+        tareasEliminadas.forEach(tarea => {
+            const tareaItem = document.createElement('li');
+            tareaItem.innerHTML = `
+                <div class="col"> <label for="tarea1">${tarea.tarea}</label></div>
+                <div class="col-2">${tarea.fecha}</div>
+                <div class="col-1">${tarea.puntos}</div>
+                <div class="col-3">${tarea.tipoTarea}</div>
+                <div class="col-3"><button class="botonrestaurar">Restaurar</button></div>
+            `;
+            tareasEliminadasList.appendChild(tareaItem);
+        });    
+
+
+       function compararFechas(a, b) {
 
             const fechaA = new Date(a.querySelector(".col-1").textContent);
             const fechaB = new Date(b.querySelector(".col-1").textContent);
@@ -346,7 +322,7 @@
         }
 
         function ordenarTareasPorFecha() {
-            const listaTareas = document.querySelector(".listaTareas");
+            const listaTareas = document.querySelector("#listaTareasEliminadas");
             const tareas = Array.from(listaTareas.querySelectorAll(".row"));
 
             tareas.sort(compararFechas);
@@ -358,15 +334,12 @@
             tareas.forEach(tarea => {
                 listaTareas.appendChild(tarea);
         });
-
-        }
-
-
+}
 </script>
 
-<div class="papelera" id="papelera">
+<div class="flechavolver" id="flechavolver">
     <a></a> <a></a>  <a></a> <a></a> <a></a> <a></a> <a></a> <a></a>
-    <a href="#" onclick="papelera()"><img src="images/Trash3.png" alt="IconoPapelera"></a>
+    <a href="#" onclick="flechavolver()"><img src="images/Flecha.png" alt="IconoFlecha"></a>
 </div>
 
 
@@ -377,8 +350,8 @@
 
     }
 
-    function papelera(){
-        window.location.href = "papelera.html";
+    function flechavolver(){
+        window.location.href = "checklist.html";
 
     }
 </script>
