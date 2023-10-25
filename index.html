@@ -150,13 +150,7 @@
 
   </div>
 
-  
-    <div class="punto">
-        <img src="images/Monedas.png" alt="Moneda">
-        <div class="puntostexto">
-        <p>00</p>
-        </div>
-    </div>
+
 
   <script>
       function toggleSidebar() {
@@ -175,9 +169,18 @@
   <button id="startButton" onclick="startCountdown()">Empezar</button>
 </div>
 
+  
+<div class="punto">
+    <img src="images/Monedas.png" alt="Moneda">
+    <div class="puntostexto">
+        <p id="puntosTotales">00</p>
+    </div>
+</div>
 
 <script>
     var countdown;
+    var puntosTotales = 0;
+    var cicloIniciado = false;
     
     function startCountdown() {
         var timeLeft = 0; // Duración en segundos de la cuenta atrás
@@ -185,7 +188,7 @@
         var descanso1 = 3 //Duración del descanso.                                                                      Cambiar
         var descanso2 = 6 //Duración del descanso.  
         var numerosetrealizados = -1;
-        var segundostotales = 60; // Duración en segundos totales                                                       Cambiar
+        var segundostotales = 20; // Duración en segundos totales                                                       Cambiar
         var descansodesactivado = true;                                              
 
         var display = document.getElementById('countdown');
@@ -207,8 +210,14 @@
 
                 if (timeLeft === 0) {
                     if ( descansodesactivado) {
-                        
-                        // Fin del ciclo de descanso, suma uno al número de sets realizados
+                        if (cicloIniciado) {
+                            // Suma un punto solo si el ciclo ya ha comenzado
+                            puntosTotales++;
+                            // Actualiza el texto en el elemento de puntos totales
+                            document.getElementById("puntosTotales").textContent = puntosTotales < 10 ? '0' + puntosTotales : puntosTotales;
+                        } else {
+                            cicloIniciado = true; // Marca el inicio del ciclo
+                        }
                         numerosetrealizados++;
                         descansodesactivado = false;
                         timeLeft = pomSet;
@@ -238,6 +247,7 @@
                         segundostotales= 0;
                         descansodesactivado = true;
                         numerosetrealizados = -1;
+                        cicloIniciado = false; 
                 }
 
                 timeLeft--;
