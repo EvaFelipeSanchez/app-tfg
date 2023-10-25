@@ -96,6 +96,39 @@
             background-color: rgb(31, 39, 78);
         }
 
+        .punto {
+        font-size: 42px;
+        height: 0;
+        margin-top: 20px;
+        width: 150px;
+   
+        padding-top: 50px; /* Cambia el alto del relleno en la parte superior */
+        padding-right: 130px; /* Cambia el ancho del relleno en el lado derecho */
+        padding-bottom: 45px; /* Cambia el alto del relleno en la parte inferior */
+        padding-left: 100px; /* Cambia el ancho del relleno en el lado izquierdo */
+
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 10%;
+        left: 75%;
+        transform: translate(-50%, -50%);
+        font-family: 'Arial', sans-serif;
+        background-color: rgb(31, 39, 78);
+        color: #fff;
+        }
+
+        .punto img {
+        width: 75px; /* Ajusta el ancho de la imagen según tus necesidades */
+        padding: 20px 0; 
+        margin-right: 20px; /* Espacio entre la imagen y el texto */
+        }
+
+        .punto .contenido {
+        flex: 1; /* El contenido ocupa el espacio restante */
+        }
+
       
   </style>
   </head>
@@ -116,6 +149,14 @@
       <!--  <button class="openbtn" onclick="toggleSidebar()">☰</button> -->
 
   </div>
+
+  
+    <div class="punto">
+        <img src="images/Monedas.png" alt="Moneda">
+        <div class="puntostexto">
+        <p>00</p>
+        </div>
+    </div>
 
   <script>
       function toggleSidebar() {
