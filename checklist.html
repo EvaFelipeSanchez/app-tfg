@@ -49,7 +49,7 @@
           top: 40px;
       }
 
-      /* Estilo para el contenido principal (debes ajustar esto para evitar solapamientos) */
+
       .content {
           margin-left: 10px;
           padding: 20px;
@@ -64,7 +64,7 @@
         }
 
         body {
-            background-image: url('images/Fondo55.png'); /* Reemplaza 'ruta-de-tu-imagen.jpg' con la ruta correcta de tu imagen */
+            background-image: url('images/Fondo3.png'); /* Reemplaza 'ruta-de-tu-imagen.jpg' con la ruta correcta de tu imagen */
             background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el fondo */
             background-repeat: no-repeat; /* Evita que la imagen se repita */
         }
@@ -181,7 +181,7 @@
     <div class="sidebar" id="sidebar">
       <a></a> <a></a>  <a></a> <a></a> <a></a> <a></a> <a></a> <a></a>
       <a href="#" onclick="index()"><img src="images/listaicono.png" alt="Icono Checklist"></a>
-      <a href="#"><img src="images/homeicono.png" alt="Icono Tienda"></a>
+      <a href="#" onclick="mascota()"><img src="images/homeicono.png" alt="Icono Tienda"></a>
       <a href="#"><img src="images/ajustesicono.png" alt="Icono Ajustes"></a>
 
       <!-- Agrega más íconos o imágenes aquí -->
@@ -268,14 +268,23 @@
                 autoclose: true
         });
 
-        function agregarTarea() {
-        var nuevaTareaInput = document.getElementById("nuevaTareaInput");
-        var nuevaTarea = nuevaTareaInput.value;
-        var fechaVencimiento = fechaVencimientoInput.value;
-        var puntos = document.getElementById("Puntos").value;
-        var tipotarea = document.getElementById("Tipo de tarea").value;
+   function agregarTarea() {
+    var nuevaTareaInput = document.getElementById("nuevaTareaInput");
+    var nuevaTarea = nuevaTareaInput.value;
+    var fechaVencimiento = fechaVencimientoInput.value;
+    var puntos = document.getElementById("Puntos").value;
+    var tipotarea = document.getElementById("Tipo de tarea").value;
 
-        if (nuevaTarea.trim() !== "") {
+    if (nuevaTarea.trim() !== "") {
+        // Verificar si ya existe una tarea con el mismo nombre
+        var tareas = JSON.parse(localStorage.getItem('tareas')) || [];
+        var tareaExistente = tareas.find(function (tarea) {
+            return tarea.tarea.toLowerCase() === nuevaTarea.toLowerCase();
+        });
+
+        if (tareaExistente) {
+            alert("¡Ya existe una tarea con el mismo nombre!");
+        } else {
             taskIdCounter++;
             var listaTareas = document.querySelector(".listaTareas");
             var nuevaTareaLi = document.createElement("div");
@@ -292,12 +301,12 @@
             listaTareas.appendChild(nuevaTareaLi);
             nuevaTareaInput.value = "";
             fechaVencimientoInput.value = "";
+
             const botonEliminar = nuevaTareaLi.querySelector(".botoneliminar");
             botonEliminar.addEventListener('click', function (event) {
                 eliminarTarea(event.target.parentElement.parentElement);
             });
 
-            const tareas = JSON.parse(localStorage.getItem('tareas')) || [];
             tareas.push({
                 id: taskIdCounter,
                 tarea: nuevaTarea,
@@ -305,11 +314,14 @@
                 puntos: puntos,
                 tipoTarea: tipotarea
             });
+
             localStorage.setItem('tareas', JSON.stringify(tareas));
 
             ordenarTareasPorFecha();
         }
     }
+}
+
 
         const botonesEliminar = document.getElementsByClassName("botoneliminar");
 
@@ -379,6 +391,11 @@
 
     function papelera(){
         window.location.href = "papelera.html";
+
+    }
+
+    function mascota(){
+        window.location.href = "mascota.html";
 
     }
 </script>

@@ -53,12 +53,18 @@
         top: 10px;
         width: 120px;
         height: 120px;
+        z-index: 3;
         }
 
         body {
             background-image: url('images/Fondo12.png'); /* Reemplaza 'ruta-de-tu-imagen.jpg' con la ruta correcta de tu imagen */
             background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el fondo */
             background-repeat: no-repeat; /* Evita que la imagen se repita */
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
         }
 
         .count {
@@ -112,7 +118,7 @@
         justify-content: center;
         align-items: center;
         top: 10%;
-        left: 75%;
+        left: 78%;
         transform: translate(-50%, -50%);
         font-family: 'Arial', sans-serif;
         background-color: rgb(31, 39, 78);
@@ -129,39 +135,138 @@
         flex: 1; /* El contenido ocupa el espacio restante */
         }
 
-      
+        .barra-de-progreso {
+            height: 20px;
+            margin-top: 375px; 
+            width: 40%;
+
+            position: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 45%; /* Centrar verticalmente en todos los dispositivos */
+            left: 50%; /* Centrar horizontalmente en todos los dispositivos */
+            transform: translate(-50%, -50%); /* Centrar en la mitad de la pantalla */
+
+            background-color: #ccc;
+        }
+
+        .barra-fondo {
+        width: 100%;
+        height: 100%;
+        background-color: #f0f0f0;
+        }
+
+        .barra-avance {
+        height: 100%;
+        background-color: rgb(31, 39, 78);
+        width: 0;
+        transition: width 1s;
+        }
+ 
+
+        .slider-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px;
+        margin-top: 410px;
+        position: relative;
+        left: 78%; 
+        transform: translate(-50%, -50%);
+        }
+
+        .blue-background {
+            background: rgb(31, 39, 78);; 
+            width: 250px;
+            height: 550px; 
+            position: absolute; 
+            z-index: -1;
+
+        }
+
+    
+        .duration-label {
+            font-weight: bold;
+            font-size: 20px;
+            color: #f0f0f0;
+            margin-bottom: 5px; 
+        }
+
+        .vertical-slider {
+            writing-mode: bt-lr; /* Utiliza writing-mode en lugar de appearance */
+            width: 390px;
+            height: 500px;
+            cursor: pointer;
+
+            background: linear-gradient(to bottom, #ccc, #ccc);
+            border: 1px solid #000;
+            border-radius: 5px;
+            transform: rotate(-90deg);
+
+        }
+
+        .slider-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+        .vertical-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: rgb(31, 39, 78);;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+
+
+        .mascotadespierta-image {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .mascotadormida-image {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+
+  
   </style>
   </head>
     
   <body>
+
+    <div class="content" >
+        <!-- Contenido principal de tu página -->
+        <a href="#" onclick="toggleSidebar()"><img src="images/logo.png" alt="Botón de menú"></a>
+        <!--  <button class="openbtn" onclick="toggleSidebar()">☰</button> -->
+  
+    </div>
+
     <div class="sidebar" id="sidebar">
       <a></a> <a></a>  <a></a> <a></a> <a></a> <a></a> <a></a> <a></a>
       <a href="#" onclick="checklist()"><img src="images/listaicono.png" alt="Icono Checklist"></a>
-      <a href="#"><img src="images/homeicono.png" alt="Icono Tienda"></a>
+      <a href="#" onclick="mascota()"><img src="images/homeicono.png" alt="Icono Tienda"></a>
       <a href="#"><img src="images/ajustesicono.png" alt="Icono Ajustes"></a>
 
       <!-- Agrega más íconos o imágenes aquí -->
   </div>
 
-  <div class="content" >
-      <!-- Contenido principal de tu página -->
-      <a href="#" onclick="toggleSidebar()"><img src="images/logo.png" alt="Botón de menú"></a>
-      <!--  <button class="openbtn" onclick="toggleSidebar()">☰</button> -->
-
-  </div>
+  <img src="images/1.2.png" alt="Mascota dormida" class="mascotadormida-image"  id="imagenMascotaDormida">
+  <img src="images/1.1.png" alt="Mascota despierta" class="mascotadespierta-image"  id="imagenMascotaDespierta">
 
 
 
-  <script>
-      function toggleSidebar() {
-          var sidebar = document.getElementById('sidebar');
-          if (sidebar.style.left === '0px') {
-              sidebar.style.left = '-250px';
-          } else {
-              sidebar.style.left = '0px';
-          }
-      }
-  </script>
 
  <div class="count" id="countdown"> 00:00</div>
  <div class="empezar" >
@@ -177,21 +282,90 @@
     </div>
 </div>
 
+<div class="barra-de-progreso">
+    <div class="barra-fondo">
+      <div class="barra-avance" id="barraAvance"></div>
+    </div>
+  </div>
+
+
+  <div class="slider-container">
+    <div class="blue-background"></div> 
+    <div class="duration-label">Duración: <span id="duracionLabel">25</span> minutos</div>
+    <div class="slider-wrapper">
+        <input type="range" id="duracion" name="duracion" min="1" max="240" value="20" class="vertical-slider" oninput="updateDurationLabel()">
+    </div>
+    
+</div>
+
+
 <script>
+     function toggleSidebar() {
+          var sidebar = document.getElementById('sidebar');
+          if (sidebar.style.left === '0px') {
+              sidebar.style.left = '-250px';
+          } else {
+              sidebar.style.left = '0px';
+          }
+      }
+
     var countdown;
     var puntosTotales = 0;
     var cicloIniciado = false;
+    var puntosTotalesGuardados = localStorage.getItem("puntosTotales");
+
     
+    var despierta = document.getElementById("imagenMascotaDespierta");
+    var dormida = document.getElementById("imagenMascotaDormida");
+    despierta.style.display = "block"; 
+    dormida.style.display = "none";
+    
+
+
+    if (puntosTotalesGuardados) {
+    puntosTotales = parseInt(puntosTotalesGuardados, 10);
+    // Actualiza el texto en el elemento de puntos totales
+    document.getElementById("puntosTotales").textContent = puntosTotales < 10 ? '0' + puntosTotales : puntosTotales;
+    } else {
+        puntosTotales = 0; // Inicializa la variable si no hay puntos almacenados
+    }
+
+    var valorBarraAvance = localStorage.getItem("barraAvance");
+
+    if (valorBarraAvance !== null) {
+        barraAvance.style.width = valorBarraAvance;
+    }
+
+    function updateDurationLabel() {
+            var duracionLabel = document.getElementById("duracionLabel");
+            var duracionInput = document.getElementById("duracion");
+            duracionLabel.textContent = duracionInput.value;
+        }
+
+        
     function startCountdown() {
         var timeLeft = 0; // Duración en segundos de la cuenta atrás
         var pomSet = 5; //Duración en segundos de la cuenta atrás del set.                                              Cambiar
         var descanso1 = 3 //Duración del descanso.                                                                      Cambiar
         var descanso2 = 6 //Duración del descanso.  
         var numerosetrealizados = -1;
-        var segundostotales = 20; // Duración en segundos totales                                                       Cambiar
+        
+        var segundostotalesInsertados = parseInt(document.getElementById("duracion").value);
+        //segundostotalesInsertados = segundostotalesInsertados * 60; 
+        var segundostotales = parseInt(document.getElementById("duracion").value);      
+        //segundostotales = segundostotales * 60; 
+        var slider = document.getElementById("duracion");
+        var valorActualSlider = parseInt(slider.value, 10);
+        
+        
         var descansodesactivado = true;                                              
-
         var display = document.getElementById('countdown');
+
+        
+        dormida.style.display = "block"; 
+        despierta.style.display = "none"; 
+
+
 
         function updateDisplay() {             
               
@@ -201,11 +375,26 @@
  
         }
 
+        
+        var barraAvance = document.getElementById("barraAvance");
+
+        function actualizarBarraDeProgreso() {
+        var porcentaje = (segundostotales / segundostotalesInsertados) * 100;
+        barraAvance.style.width = porcentaje + "%";
+        }
+
+
 
         // Función para manejar la cuenta regresiva
         function countdown() {
+            barraAvance.style.width = "100%";
+           localStorage.setItem("barraAvance", "100");
+
+
+
             var timer = setInterval(function () {
                 updateDisplay();
+                actualizarBarraDeProgreso();
                 
 
                 if (timeLeft === 0) {
@@ -215,6 +404,7 @@
                             puntosTotales++;
                             // Actualiza el texto en el elemento de puntos totales
                             document.getElementById("puntosTotales").textContent = puntosTotales < 10 ? '0' + puntosTotales : puntosTotales;
+                            localStorage.setItem("puntosTotales", puntosTotales);
                         } else {
                             cicloIniciado = true; // Marca el inicio del ciclo
                         }
@@ -248,14 +438,30 @@
                         descansodesactivado = true;
                         numerosetrealizados = -1;
                         cicloIniciado = false; 
+                        porcentaje = 100;
+                        barraAvance.style.width  = porcentaje + "%";
+                        document.getElementById("duracionLabel").textContent = valorActualSlider;
+                        
+                        despierta.style.display = "block"; 
+                        dormida.style.display = "none"; 
                 }
 
                 timeLeft--;
                 segundostotales--;
+                valorActualSlider--;
+                slider.value = valorActualSlider;
 
             }, 1000);
 
         }
+
+
+        var valorBarraAvance = localStorage.getItem("barraAvance");
+        if (!valorBarraAvance) {
+            barraAvance.style.width = "100%";
+            localStorage.setItem("barraAvance", "100");
+        }
+
         countdown();
             
     }
@@ -265,6 +471,11 @@
 <script>
     function checklist(){
         window.location.href = "checklist.html";
+
+    }
+
+    function mascota(){
+        window.location.href = "mascota.html";
 
     }
 </script>
