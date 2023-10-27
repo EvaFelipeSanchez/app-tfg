@@ -104,7 +104,7 @@
             margin: 10px 0;
         }
 
-        .buy-button {
+        .activar-button {
             background-color: #213953;
             color: #fff;
             padding: 5px 10px;
@@ -158,6 +158,39 @@
         height: 110px;
         }
 
+        .punto {
+        font-size: 42px;
+        height: 0;
+        margin-top: 20px;
+        width: 150px;
+   
+        padding-top: 50px; /* Cambia el alto del relleno en la parte superior */
+        padding-right: 130px; /* Cambia el ancho del relleno en el lado derecho */
+        padding-bottom: 45px; /* Cambia el alto del relleno en la parte inferior */
+        padding-left: 100px; /* Cambia el ancho del relleno en el lado izquierdo */
+
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 7%;
+        left: 63%;
+        transform: translate(-50%, -50%);
+        font-family: 'Arial', sans-serif;
+        background-color: rgb(52, 60, 104);
+        color: #fff;
+        }
+
+        .punto img {
+        width: 75px; /* Ajusta el ancho de la imagen según tus necesidades */
+        padding: 20px 0; 
+        margin-right: 20px; /* Espacio entre la imagen y el texto */
+        }
+
+        .punto .contenido {
+        flex: 1; /* El contenido ocupa el espacio restante */
+        }
+
 
 
 
@@ -191,45 +224,27 @@
     <a href="#" onclick="cementerio()"><img src="images/Tumba.png" alt="Icono de tumba"></a>
   </div>
 
+  <div class="punto">
+    <img src="images/Monedas.png" alt="Moneda">
+    <div class="puntostexto">
+        <p id="puntosTotales">00</p>
+    </div>
+</div>
+
   <div class="store">
     <div class="item">
-        <img src="images/2.1.png" alt="Producto 1">
-        <p class="price">$10</p>
-        <input type="text" id="nuevaMascotaInput" placeholder="Nombre Mascota" required>
-        <button class="buy-button" onclick="comprar(1)">Comprar</button>
+        <img src="images/1.1.png" alt="Producto 1" >
+        <img class="segunda-imagen" src="images/1.2.png" alt="Producto 1-2" style="display: none">
+        <p class="nombre">Paco</p>
+        <button class="activar-button" onclick="activar(1)">Activar</button>
     </div>
     <div class="item">
-        <img src="images/3.1.png" alt="Producto 2">
-        <p class="price">$15</p>
-        <input type="text" id="nuevaMascotaInput" placeholder="Nombre Mascota" required>
-        <button class="buy-button" onclick="comprar(2)">Comprar</button>
+        <img src="images/2.1.png" alt="Producto 2"  id="imagenMascotaDespierta">
+        <img class="segunda-imagen" src="images/2.2.png" alt="Producto 2-2" style="display: none">
+        <p class="nombre">Paquita</p>
+        <button class="activar-button" onclick="activar(2)">Activar</button>
     </div>
-    <div class="item">
-        <img src="images/4.1.png" alt="Producto 3">
-        <p class="price">$10</p>
-        <input type="text" id="nuevaMascotaInput" placeholder="Nombre Mascota" required>
-        <button class="buy-button" onclick="comprar(3)">Comprar</button>
-    </div>
-    <div class="item">
-        <img src="images/5.1.png" alt="Producto 4">
-        <p class="price">$15</p>
-        <input type="text" id="nuevaMascotaInput" placeholder="Nombre Mascota" required>
-        <button class="buy-button" onclick="comprar(4)">Comprar</button>
-    </div>
-    <div class="item">
-        <img src="images/6.1.png" alt="Producto 5">
-        <p class="price">$10</p>
-        <input type="text" id="nuevaMascotaInput" placeholder="Nombre Mascota" required>
-        <button class="buy-button" onclick="comprar(5)">Comprar</button>
-    </div>
-    <div class="item">
-        <img src="images/7.1.png" alt="Producto 6">
-        <p class="price">$15</p>
-        <input type="text" id="nuevaMascotaInput" placeholder="Nombre Mascota" required>
-        <button class="buy-button" onclick="comprar(6)">Comprar</button>
-    </div>
-
-</div>
+  </div>
 
   <script>
       function toggleSidebar() {
@@ -244,10 +259,144 @@
 
 
 <script>
-    function comprar(productoId) {
-    // Puedes personalizar esta función para llevar un seguimiento de las compras, como agregar productos a un carrito, etc.
-    alert(`Has comprado el producto ${productoId}`);
-    }
+
+        // Inicializa un arreglo vacío para almacenar los elementos store
+        var storeElements = JSON.parse(localStorage.getItem('storeElements')) || [];
+
+        // Cargar los elementos store guardados localmente
+        function cargarElementosGuardados() {
+            var storeContainer = document.querySelector('.store');
+            storeElements.forEach(function (elementData) {
+                var nuevoItem = document.createElement('div');
+                nuevoItem.classList.add('item');
+
+                var nuevaImagen = document.createElement('img');
+                nuevaImagen.src = elementData.imagenPrincipal;
+                nuevaImagen.alt = 'Nuevo Producto';
+                nuevoItem.appendChild(nuevaImagen);
+
+                var nuevaSegundaImagen = document.createElement('img');
+                nuevaSegundaImagen.src = elementData.segundaImagen;
+                nuevaSegundaImagen.alt = 'Nuevo Producto-2';
+                nuevaSegundaImagen.classList.add('segunda-imagen');
+                nuevaSegundaImagen.style.display = 'none';
+                nuevoItem.appendChild(nuevaSegundaImagen);
+
+                var nuevoNombre = document.createElement('p');
+                nuevoNombre.classList.add('nombre');
+                nuevoNombre.textContent = elementData.nombre;
+                nuevoItem.appendChild(nuevoNombre);
+
+                var nuevoBotonActivar = document.createElement('button');
+                nuevoBotonActivar.classList.add('activar-button');
+                nuevoBotonActivar.textContent = 'Activar';
+                nuevoBotonActivar.onclick = function () {
+                    activar(storeElements.indexOf(elementData) + 1);
+                };
+                nuevoItem.appendChild(nuevoBotonActivar);
+
+                storeContainer.appendChild(nuevoItem);
+            });
+        }
+
+        cargarElementosGuardados();
+
+ 
+
+        let itemStore = parseInt(localStorage.getItem('itemstorevalue') || '3');
+        var puntosTotalesGuardados = localStorage.getItem("puntosTotales");
+
+        if (puntosTotalesGuardados) {
+        puntosTotales = parseInt(puntosTotalesGuardados, 10);
+        // Actualiza el texto en el elemento de puntos totales
+        document.getElementById("puntosTotales").textContent = puntosTotales < 10 ? '0' + puntosTotales : puntosTotales;
+        } else {
+            puntosTotales = 0; // Inicializa la variable si no hay puntos almacenados
+        }
+
+
+        function agregarNuevoItem() {
+            console.log("Entra a agregar un item");
+            const storeContainer = document.querySelector('.store');
+
+            // Crear un nuevo elemento div con la clase "item"
+            const nuevoItem = document.createElement('div');
+            nuevoItem.classList.add('item');
+
+            // Crear una imagen para el nuevo elemento
+            const nuevaImagen = document.createElement('img');
+            nuevaImagen.src = localStorage.getItem('imagenPrincipalTraspaso'); // Ruta de la imagen para el nuevo producto
+            nuevaImagen.alt = 'Nuevo Producto';
+            nuevoItem.appendChild(nuevaImagen);
+
+            // Crear una segunda imagen para el nuevo elemento
+            const nuevaSegundaImagen = document.createElement('img');
+            nuevaSegundaImagen.src = localStorage.getItem('segundaImagenTraspado');
+            nuevaSegundaImagen.alt = 'Nuevo Producto-2';
+            nuevaSegundaImagen.classList.add('segunda-imagen'); // Ruta de la segunda imagen para el nuevo producto
+
+            nuevaSegundaImagen.style.display = 'none';
+            nuevoItem.appendChild(nuevaSegundaImagen);
+
+            // Crear un párrafo con la clase "nombre" y contenido para el nuevo elemento
+            const nuevoNombre = document.createElement('p');
+            nuevoNombre.classList.add('nombre');
+            nuevoNombre.textContent = localStorage.getItem('nombreTraspasado');// Nombre del nuevo producto
+            nuevoItem.appendChild(nuevoNombre);
+            // Obtener item
+            itemStore++;
+            localStorage.setItem('itemstorevalue', itemStore); 
+
+
+
+            // Crear un botón de activación para el nuevo elemento
+            const nuevoBotonActivar = document.createElement('button');
+            nuevoBotonActivar.classList.add('activar-button');
+            nuevoBotonActivar.textContent = 'Activar';
+            nuevoBotonActivar.onclick = function () {
+                activar(itemStore); // Pasar el número del nuevo ítem
+            };
+            nuevoItem.appendChild(nuevoBotonActivar);
+
+            // Agregar el nuevo elemento a la tienda
+            storeContainer.appendChild(nuevoItem);
+
+            storeElements.push({
+                imagenPrincipal: localStorage.getItem('imagenPrincipalTraspaso'),
+                segundaImagen: localStorage.getItem('segundaImagenTraspasado'),
+                nombre: localStorage.getItem('nombreTraspasado'),
+            });
+
+        }
+
+        
+
+        var traspaso = localStorage.getItem('traspaso') === "true"; // Recuperar el valor y convertirlo a boolean
+        if (traspaso) {
+            agregarNuevoItem();
+            traspaso = false; // Establecerlo en falso después de agregar el nuevo elemento
+            localStorage.setItem('traspaso', traspaso); // Guardar el valor actualizado
+        }
+
+        function activar(item) {
+            // Obtener las imágenes del elemento específico
+            var imagenPrincipal = document.querySelector('.store .item:nth-child(' + item + ') img');
+            var segundaImagen = document.querySelector('.store .item:nth-child(' + item + ') .segunda-imagen');
+
+            var nombre = document.querySelector('.store .item:nth-child(' + item + ') .nombre');
+
+            // Almacenar las rutas de las imágenes en el almacenamiento local
+            localStorage.setItem('imagenPrincipal',  imagenPrincipal.src);
+            localStorage.setItem('segundaImagen' , segundaImagen.src);
+            localStorage.setItem('nombrePrincipal', nombre.textContent);
+            
+
+            // Redirigir a otro HTML
+            window.location.href = 'index.html';
+        }
+
+
+    
 
 
 </script>
@@ -262,6 +411,14 @@
     function index(){
         window.location.href = "index.html";
 
+    }
+
+    function cementerio(){
+        window.location.href = "cementerio.html";
+    }
+
+    function tienda(){
+        window.location.href = "tienda.html";
     }
 </script>
 

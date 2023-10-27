@@ -240,6 +240,44 @@
         }
 
 
+        .message-block {
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 150px;
+            background-color: rgb(144, 164, 208);
+            border: 1px solid #1b1c47;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        #message {
+            font-size: 24px;
+            text-align: center;
+            margin-top: 30px;
+
+        }
+
+        .nombreMascota {
+            position: fixed;
+            top: 61%;
+            left: 58%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            font-family: 'Arial', sans-serif; 
+            background-color: rgb(31, 39, 78);
+            z-index: 10;
+
+        }
+
+
+
   
   </style>
   </head>
@@ -252,6 +290,13 @@
         <!--  <button class="openbtn" onclick="toggleSidebar()">☰</button> -->
   
     </div>
+
+    <div class="message-block" id="messageBlock" style="display: none">
+        <p id="message">Mensaje inicial</p>
+    </div>
+
+    <p class="nombreMascota" id="MascotaNombre">Nombre</p>
+
 
     <div class="sidebar" id="sidebar">
       <a></a> <a></a>  <a></a> <a></a> <a></a> <a></a> <a></a> <a></a>
@@ -300,6 +345,41 @@
 
 
 <script>
+    const messagesdescanso = [
+    "Mensaje 1",
+    "Mensaje 2",
+    "Mensaje 3",
+    "Mensaje 4",
+    "Mensaje 5",
+    ];
+
+    const messageBlock = document.getElementById("messageBlock");
+    const messageElement = document.getElementById("message");
+
+    function getRandomMessage() {
+    const randomIndex = Math.floor(Math.random() * messagesdescanso.length);
+    return messagesdescanso[randomIndex];
+    }
+
+    function updateMessage() {
+        const newMessage = getRandomMessage();
+        messageElement.textContent = newMessage;
+    }
+
+    //updateMessage();
+    //despierta.style.display = "none"; 
+    //dormida.style.display = "block"; 
+    
+
+     var imagenPrincipalSrc = localStorage.getItem('imagenPrincipal');
+     var segundaImagenSrc = localStorage.getItem('segundaImagen');
+     document.getElementById('imagenMascotaDespierta').src = imagenPrincipalSrc;
+     document.getElementById('imagenMascotaDormida').src = segundaImagenSrc;
+
+     var nombrePrincipalSrc = localStorage.getItem('nombrePrincipal');
+     document.getElementById('MascotaNombre').textContent = nombrePrincipalSrc;
+     console.log("Nombre mascota: " + nombrePrincipalSrc)
+
      function toggleSidebar() {
           var sidebar = document.getElementById('sidebar');
           if (sidebar.style.left === '0px') {
@@ -399,6 +479,7 @@
 
                 if (timeLeft === 0) {
                     if ( descansodesactivado) {
+                        messageBlock.style.display = "none";
                         if (cicloIniciado) {
                             // Suma un punto solo si el ciclo ya ha comenzado
                             puntosTotales++;
@@ -415,6 +496,8 @@
 
                     } else {
                         // Inicio del ciclo de descanso
+                        messageBlock.style.display = "block";
+                        updateMessage();
                         descansodesactivado = true;
 
                         if (numerosetrealizados === 4) {
