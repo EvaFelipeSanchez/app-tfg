@@ -228,9 +228,6 @@
         const tareasEliminadasList = document.querySelector('.listaTareasEliminadas');
         const tareasEliminadas = JSON.parse(localStorage.getItem('tareasEliminadas')) || [];
 
-        eliminarTareasAnterioresAUnMes();
-        ordenarTareasPorFecha(); 
-
         const botonesRestaurar = document.querySelectorAll(".botonrestaurar");
 
         botonesRestaurar.forEach(boton => {
@@ -242,17 +239,25 @@
         function eliminarTareasAnterioresAUnMes() {
             const fechaActual = new Date();
             fechaActual.setMonth(fechaActual.getMonth() - 1);
-
             const fechaLimite = fechaActual.toISOString().slice(0, 10);
             const tareasEliminadas = Array.from(tareasEliminadasList.querySelectorAll('li'));
+
             tareasEliminadas.forEach(tarea => {
                 const fechaTarea = tarea.querySelector('.col-2').textContent;
-                if (fechaTarea <= fechaLimite) {
-                    tarea.remove(); 
+
+                // Parse dates in a standardized format (YYYY-MM-DD)
+                const fechaTareaParts = fechaTarea.split('-');
+                const fechaActualParts = fechaLimite.split('-');
+
+                const tareaDate = new Date(fechaTareaParts[0], fechaTareaParts[1] - 1, fechaTareaParts[2]);
+                const limiteDate = new Date(fechaActualParts[0], fechaActualParts[1] - 1, fechaActualParts[2]);
+
+                if (tareaDate <= limiteDate) {
+                    tarea.remove();
                     eliminarTarea(tarea);
                 }
             });
-        }
+         }
 
         function eliminarTarea(tareaRow) {
             const taskId = tareaRow.dataset.taskId;
@@ -314,18 +319,21 @@
         });    
 
 
-       function compararFechas(a, b) {
-
-            const fechaA = new Date(a.querySelector(".col-1").textContent);
-            const fechaB = new Date(b.querySelector(".col-1").textContent);
-            return fechaA - fechaB;
+        function compareDates(dateStringA, dateStringB) {
+            const dateA = new Date(dateStringA);
+            const dateB = new Date(dateStringB);
+            return dateA - dateB;
         }
 
         function ordenarTareasPorFecha() {
-            const listaTareas = document.querySelector("#listaTareasEliminadas");
-            const tareas = Array.from(listaTareas.querySelectorAll(".row"));
+            const listaTareas = document.querySelector('.listaTareasEliminadas');
+            const tareas = Array.from(listaTareas.querySelectorAll('li'));
 
-            tareas.sort(compararFechas);
+            tareas.sort((a, b) => {
+                const fechaA = a.querySelector('.col-2').textContent;
+                const fechaB = b.querySelector('.col-2').textContent;
+                return compareDates(fechaA, fechaB);
+            });
 
             while (listaTareas.firstChild) {
                 listaTareas.removeChild(listaTareas.firstChild);
@@ -333,8 +341,11 @@
 
             tareas.forEach(tarea => {
                 listaTareas.appendChild(tarea);
-        });
-}
+            });
+        }
+
+        eliminarTareasAnterioresAUnMes();
+        ordenarTareasPorFecha();
 </script>
 
 <div class="flechavolver" id="flechavolver">

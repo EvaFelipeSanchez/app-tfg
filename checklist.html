@@ -354,10 +354,16 @@
         }
 
         function compararFechas(a, b) {
+            const fechaA = new Date(a.querySelector(".col-2").textContent); // Use .col-2 for the date column
+            const fechaB = new Date(b.querySelector(".col-2").textContent);
 
-            const fechaA = new Date(a.querySelector(".col-1").textContent);
-            const fechaB = new Date(b.querySelector(".col-1").textContent);
-            return fechaA - fechaB;
+            // Check if the dates are valid
+            if (!isNaN(fechaA) && !isNaN(fechaB)) {
+                return fechaA - fechaB;
+            } else {
+                // If the dates are invalid, move the task with an invalid date to the end
+                return isNaN(fechaA) ? 1 : -1;
+            }
         }
 
         function ordenarTareasPorFecha() {
@@ -372,7 +378,7 @@
 
             tareas.forEach(tarea => {
                 listaTareas.appendChild(tarea);
-        });
+            });
 
         }
 
