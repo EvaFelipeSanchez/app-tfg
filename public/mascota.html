@@ -204,6 +204,7 @@
       <a></a> <a></a>  <a></a> <a></a> <a></a> <a></a> <a></a> <a></a>
       <a href="#" onclick="checklist()"><img src="images/listaicono.png" alt="Icono Checklist"></a>
       <a href="#" onclick="index()"><img src="images/homeicono.png" alt="Icono Tienda"></a>
+           <a href="#" onclick="cementerio()"><img src="images/Tumba.png" alt="Icono Cementerio"></a>
       <a href="#"><img src="images/ajustesicono.png" alt="Icono Ajustes"></a>
 
       <!-- Agrega más íconos o imágenes aquí -->
@@ -220,9 +221,7 @@
     <a href="#" onclick="tienda()"><img src="images/homeicono.png" alt="Icono de tienda"></a>
   </div>
 
-  <div class="cementerio" id="cementerio">
-    <a href="#" onclick="cementerio()"><img src="images/Tumba.png" alt="Icono de tumba"></a>
-  </div>
+
 
   <div class="punto">
     <img src="images/Monedas.png" alt="Moneda">
@@ -257,18 +256,78 @@
       }
   </script>
 
-
 <script>
-            
-        // Inicializa un arreglo vacío para almacenar los elementos store
-        var storeElements = JSON.parse(localStorage.getItem('storeElements')) || [];
+        // Obtener la tienda (div con clase "store")
+        var store = document.querySelector('.store');
+
+        // Obtener todos los elementos con clase "item" dentro de la tienda
+        var items = store.querySelectorAll('.item');
+
+        // Crear una lista local para almacenar los elementos de la tienda
+        var listaLocal = JSON.parse(localStorage.getItem('storeElements')) || [];
+        //var listaLocal = [];
+        localStorage.setItem('storeElements', JSON.stringify(listaLocal));
+
+        if (listaLocal.length === 0) {
+            items.forEach(function (item, index) {
+            var imagen = item.querySelector('img').src;
+            var segundaImagen = item.querySelector('.segunda-imagen').src;
+            var nombre = item.querySelector('.nombre').textContent;
+
+            var elementoTienda = {
+                imagenPrincipal: imagen,
+                segundaImagen: segundaImagen,
+                nombre: nombre
+            };
+
+            listaLocal.push(elementoTienda);
+        });
+
+        } 
+
+        localStorage.setItem('storeElements', JSON.stringify(listaLocal));
+
+        console.log(listaLocal);
 
 
-        // Cargar los elementos store guardados localmente
+
+        //var storeElements = JSON.parse(localStorage.getItem('storeElements')) || [];
+
+         if (!localStorage.getItem('funcionEjecutada')) {
+            window.onload = function() {
+                window.location.href = "tienda.html";
+                localStorage.setItem('funcionEjecutada', 'true');
+            };
+        }
+
+        window.onload = function() {
+
+        
+            function elementYaExisteEnMascota(elementData) {
+                var storeContainer = document.querySelector('.store');
+                var items = storeContainer.querySelectorAll('.item');
+
+                for (var i = 0; i < items.length; i++) {
+                    var nombreElement = items[i].querySelector('.nombre');
+                    if (nombreElement.textContent === elementData.nombre) {
+                        return true; // El elemento ya existe en la ventana "mascota.html"
+                    }
+                }
+
+                return false; // El elemento no existe en la ventana "mascota.html"
+            }
+
+
         function cargarElementosGuardados() {
             var storeContainer = document.querySelector('.store');
-            storeElements.forEach(function (elementData) {
-                var nuevoItem = document.createElement('div');
+            var listaLocal = JSON.parse(localStorage.getItem('storeElements')) || [];
+            storeContainer.innerHTML = '';
+
+            listaLocal.forEach(function (elementData) {
+                if (!elementYaExisteEnMascota(elementData)) {
+            var nuevoItem = document.createElement('div');
+            nuevoItem.classList.add('item');
+            var nuevoItem = document.createElement('div');
                 nuevoItem.classList.add('item');
 
                 var nuevaImagen = document.createElement('img');
@@ -292,18 +351,20 @@
                 nuevoBotonActivar.classList.add('activar-button');
                 nuevoBotonActivar.textContent = 'Activar';
                 nuevoBotonActivar.onclick = function () {
-                    activar(storeElements.indexOf(elementData) + 1);
+                    activar(listaLocal.indexOf(elementData) + 1);
                 };
                 nuevoItem.appendChild(nuevoBotonActivar);
 
                 storeContainer.appendChild(nuevoItem);
+         
+            }
+
             });
+        } 
+
+         cargarElementosGuardados();
         }
 
-
-        
-
- 
 
         let itemStore = parseInt(localStorage.getItem('itemstorevalue') || '3');
         var puntosTotalesGuardados = localStorage.getItem("puntosTotales");
@@ -318,87 +379,93 @@
 
 
         function agregarNuevoItem() {
-                        // Obtener item
+
+            // Obtener item
             itemStore++;
             localStorage.setItem('itemstorevalue', itemStore); 
-            
-            console.log("Entra a agregar un item");
-            const storeContainer = document.querySelector('.store');
 
-            // Crear un nuevo elemento div con la clase "item"
-            const nuevoItem = document.createElement('div');
-            nuevoItem.classList.add('item');
+            //const storeContainer = document.querySelector('.store');
+
+
+            const nuevoItem = document.createElement('div'); //
+            nuevoItem.classList.add('item');  //
 
             // Crear una imagen para el nuevo elemento
-            const nuevaImagen = document.createElement('img');
-            nuevaImagen.src = localStorage.getItem('imagenPrincipalTraspaso'); // Ruta de la imagen para el nuevo producto
-            nuevaImagen.alt = 'Nuevo Producto';
+            var nuevaImagen = document.createElement('img');
+            nuevaImagen.src = localStorage.getItem('imagenPrincipalTraspaso'); ;
+            nuevaImagen.alt = localStorage.getItem('nombreTraspasado');
             nuevoItem.appendChild(nuevaImagen);
 
-            // Crear una segunda imagen para el nuevo elemento
-            const nuevaSegundaImagen = document.createElement('img');
-            nuevaSegundaImagen.src = localStorage.getItem('segundaImagenTraspado');
-            nuevaSegundaImagen.alt = 'Nuevo Producto-2';
-            nuevaSegundaImagen.classList.add('segunda-imagen'); // Ruta de la segunda imagen para el nuevo producto
-
+            // Crea una segunda imagen para el nuevo elemento
+            var nuevaSegundaImagen = document.createElement('img');
+            nuevaSegundaImagen.src = localStorage.getItem('segundaImagenTraspaso');
+            nuevaSegundaImagen.alt = localStorage.getItem('nombreTraspasado') + '-2';
+            nuevaSegundaImagen.classList.add('segunda-imagen');
             nuevaSegundaImagen.style.display = 'none';
             nuevoItem.appendChild(nuevaSegundaImagen);
 
-            // Crear un párrafo con la clase "nombre" y contenido para el nuevo elemento
-            const nuevoNombre = document.createElement('p');
-            nuevoNombre.classList.add('nombre');
-            nuevoNombre.textContent = localStorage.getItem('nombreTraspasado');// Nombre del nuevo producto
-            nuevoItem.appendChild(nuevoNombre);
+            // Crea un párrafo con la clase "nombre" y contenido para el nuevo elemento
+            var nuevoNombreElement = document.createElement('p');
+            nuevoNombreElement.classList.add('nombre');
+            nuevoNombreElement.textContent = localStorage.getItem('nombreTraspasado'); 
+            nuevoItem.appendChild(nuevoNombreElement);
 
-
-
-
-            // Crear un botón de activación para el nuevo elemento
-            const nuevoBotonActivar = document.createElement('button');
+            // Crea un botón de activación para el nuevo elemento
+            var nuevoBotonActivar = document.createElement('button');
             nuevoBotonActivar.classList.add('activar-button');
             nuevoBotonActivar.textContent = 'Activar';
             nuevoBotonActivar.onclick = function () {
-                activar(itemStore); // Pasar el número del nuevo ítem
+                activar(itemStore);
             };
             nuevoItem.appendChild(nuevoBotonActivar);
 
-            // Agregar el nuevo elemento a la tienda
+            var storeContainer = document.querySelector('.store');
             storeContainer.appendChild(nuevoItem);
 
-            storeElements.push({
-                imagenPrincipal: localStorage.getItem('imagenPrincipalTraspaso'),
-                segundaImagen: localStorage.getItem('segundaImagenTraspasado'),
+            // Almacena la información del nuevo elemento localmente
+            listaLocal.push({
+                imagenPrincipal:  localStorage.getItem('imagenPrincipalTraspaso'),
+                segundaImagen:  localStorage.getItem('segundaImagenTraspaso'),
                 nombre: localStorage.getItem('nombreTraspasado'),
             });
+            localStorage.setItem('storeElements', JSON.stringify(listaLocal));
 
-
-        }
-
+            // Asigna el evento "Activar" al botón del nuevo elemento
+            nuevoBotonActivar.onclick = function () {
+                activar(itemStore);
+            };
+       }
         
 
         var traspaso = localStorage.getItem('traspaso') === "true"; // Recuperar el valor y convertirlo a boolean
         if (traspaso) {
-            agregarNuevoItem();
+            //agregarNuevoItem();
             traspaso = false; // Establecerlo en falso después de agregar el nuevo elemento
             localStorage.setItem('traspaso', traspaso); // Guardar el valor actualizado
            
         }
 
+
         function activar(item) {
-            // Obtener las imágenes del elemento específico
-            var imagenPrincipal = document.querySelector('.store .item:nth-child(' + item + ') img');
-            var segundaImagen = document.querySelector('.store .item:nth-child(' + item + ') .segunda-imagen');
+            var index = item - 1; // Resta 1 para obtener el índice correcto
+            if (index >= 0 && index < listaLocal.length) {
+                // Obtén las rutas de las imágenes y el nombre del elemento específico
+                var imagenPrincipal = listaLocal[index].imagenPrincipal;
+                var segundaImagen = listaLocal[index].segundaImagen;
+                var nombre = listaLocal[index].nombre;
 
-            var nombre = document.querySelector('.store .item:nth-child(' + item + ') .nombre');
+                // Almacena las rutas de las imágenes y el nombre en el almacenamiento local
+                localStorage.setItem('imagenPrincipal', imagenPrincipal);
+                localStorage.setItem('segundaImagen', segundaImagen);
+                localStorage.setItem('nombrePrincipal', nombre);
 
-            // Almacenar las rutas de las imágenes en el almacenamiento local
-            localStorage.setItem('imagenPrincipal',  imagenPrincipal.src);
-            localStorage.setItem('segundaImagen' , segundaImagen.src);
-            localStorage.setItem('nombrePrincipal', nombre.textContent);
-            
+                console.log(imagenPrincipal);
+                console.log(segundaImagen);
+                console.log(nombre);
 
-            // Redirigir a otro HTML
-            window.location.href = 'index.html';
+                // Redirige a otro HTML
+                window.location.href = 'index.html';
+            }
         }
 
 
@@ -422,6 +489,8 @@
     function cementerio(){
         window.location.href = "cementerio.html";
     }
+
+
 
     function tienda(){
         window.location.href = "tienda.html";

@@ -67,6 +67,7 @@
             overflow: hidden; 
         }
 
+
         .count {
             font-size: 62px;
             height: 0;
@@ -100,6 +101,25 @@
             color: rgb(255, 255, 255);
             font-family: 'Arial', sans-serif; 
             background-color: rgb(31, 39, 78);
+        }
+
+        .terminar {
+            font-size: 42px;
+            height: 0;
+            margin-top: 390px; /* Mueve el elemento hacia arriba 50 píxeles */
+            width: 150px;
+
+            position: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 50%; /* Centrar verticalmente en todos los dispositivos */
+            left: 50%; /* Centrar horizontalmente en todos los dispositivos */
+            transform: translate(-50%, -50%); /* Centrar en la mitad de la pantalla */
+            color: rgb(255, 255, 255);
+            font-family: 'Arial', sans-serif; 
+            background-color: rgb(31, 39, 78);
+
         }
 
         .punto {
@@ -302,6 +322,7 @@
       <a></a> <a></a>  <a></a> <a></a> <a></a> <a></a> <a></a> <a></a>
       <a href="#" onclick="checklist()"><img src="images/listaicono.png" alt="Icono Checklist"></a>
       <a href="#" onclick="mascota()"><img src="images/homeicono.png" alt="Icono Tienda"></a>
+      <a href="#" onclick="cementerio()"><img src="images/Tumba.png" alt="Icono Cementerio"></a>
       <a href="#"><img src="images/ajustesicono.png" alt="Icono Ajustes"></a>
 
       <!-- Agrega más íconos o imágenes aquí -->
@@ -318,6 +339,13 @@
   <!-- Contenido principal de tu página -->
   <button id="startButton" onclick="startCountdown()">Empezar</button>
 </div>
+
+<div class="terminar" >
+    <!-- Contenido principal de tu página -->
+    <button id="terminarButton" onclick="terminarCountdown()">FINALIZAR</button>
+  </div>
+
+
 
   
 <div class="punto">
@@ -342,7 +370,6 @@
     </div>
     
 </div>
-
 
 <script>
     const messagesdescanso = [
@@ -399,7 +426,11 @@
     var dormida = document.getElementById("imagenMascotaDormida");
     despierta.style.display = "block"; 
     dormida.style.display = "none";
-    
+
+    var terminar = document.getElementById("terminarButton");
+    terminar.style.display = "none";
+    var empezar = document.getElementById("startButton");
+    empezar.style.display = "block";
 
 
     if (puntosTotalesGuardados) {
@@ -444,6 +475,8 @@
         
         dormida.style.display = "block"; 
         despierta.style.display = "none"; 
+        terminar.style.display = "block";
+        empezar.style.display = "none";
 
 
 
@@ -469,6 +502,8 @@
         function countdown() {
             barraAvance.style.width = "100%";
            localStorage.setItem("barraAvance", "100");
+           terminar.style.display = "block";
+           empezar.style.display = "none";
 
 
 
@@ -527,6 +562,8 @@
                         
                         despierta.style.display = "block"; 
                         dormida.style.display = "none"; 
+                        terminar.style.display = "none";
+                        empezar.style.display = "block";
                 }
 
                 timeLeft--;
@@ -548,6 +585,66 @@
         countdown();
             
     }
+
+    var listaCementerio = JSON.parse(localStorage.getItem('CementerioElements')) || [];
+        window.onload = function () {
+            // Obtener la lista local
+            var listaCementerio = JSON.parse(localStorage.getItem('CementerioElements')) || [];
+
+            // Establecer itemStore en función del índice más alto en la lista local
+            itemStore = 0;
+            listaCementerio.forEach(function (element) {
+                if (element.index > itemStore) {
+                    itemStore = element.index;
+                }
+            });
+
+    };
+
+
+    function enviarCementerio() {
+            // imagenPrincipalSrc
+            // nombrePrincipalSrc 
+
+            var fechaActual = new Date();
+
+            // Formatea la fecha
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var fechaFormateada = fechaActual.toLocaleDateString(undefined, options);
+
+
+            localStorage.setItem('imagenPrincipalCementerio', imagenPrincipalSrc);
+            localStorage.setItem('nombrePrincipalCementerio', nombrePrincipalSrc );
+            localStorage.setItem('fechaCementerio', fechaFormateada );
+
+            var nuevoElemento = {
+                        imagenPrincipal: imagenPrincipalSrc,
+                        nombre: nombrePrincipalSrc,
+                        fechamuerte: fechaFormateada
+            };
+            listaCementerio.push(nuevoElemento);
+            localStorage.setItem('CementerioElements', JSON.stringify( listaCementerio));
+           
+
+            document.getElementById('imagenMascotaDespierta').src = "images/cruz.png";
+            document.getElementById('imagenMascotaDormida').src = "images/cruz.png";
+            document.getElementById('MascotaNombre').textContent = "";
+            localStorage.setItem('imagenPrincipal', "images/cruz.png");
+            localStorage.setItem('segundaImagen', "images/cruz.png");
+            localStorage.setItem('nombrePrincipal', "");
+
+
+            // Redirigir a otro HTML
+            window.location.href = 'cementerio.html';
+
+
+            
+     }
+
+    function terminarCountdown(){
+        enviarCementerio();
+    }
+
 </script>
 
 
@@ -560,6 +657,10 @@
     function mascota(){
         window.location.href = "mascota.html";
 
+    }
+
+    function cementerio(){
+        window.location.href = "cementerio.html";
     }
 </script>
 

@@ -147,7 +147,8 @@
     <div class="sidebar" id="sidebar">
       <a></a> <a></a>  <a></a> <a></a> <a></a> <a></a> <a></a> <a></a>
       <a href="#" onclick="checklist()"><img src="images/listaicono.png" alt="Icono Checklist"></a>
-      <a href="#" onclick="index()"><img src="images/homeicono.png" alt="Icono Tienda"></a>
+      <a href="#" onclick="mascota()"><img src="images/homeicono.png" alt="Icono Tienda"></a>
+      <a href="#" onclick="index()"><img src="images/Tumba.png" alt="Icono Cementerio"></a>
       <a href="#"><img src="images/ajustesicono.png" alt="Icono Ajustes"></a>
 
       <!-- Agrega más íconos o imágenes aquí -->
@@ -160,21 +161,11 @@
 
   </div>
 
-  <div class="mascotabar" id="mascotaba">
-    <a href="#" onclick="mascota()"><img src="images/homeicono.png" alt="Icono de tienda"></a>
-  </div>
 
 
-  <div class="cementerio">
-    <div class="item">
-        <img src="images/2.1.png" alt="Producto 1">
-        <p class="nombre">???</p>
-        <p class="fechamuerte">00/00</p>
-       
-    </div>
-   
-
+<div class="cementerio" id="cementerioContainer">
 </div>
+
 
   <script>
       function toggleSidebar() {
@@ -189,10 +180,142 @@
 
 
 <script>
-    function activar(productoId) {
-    // Puedes personalizar esta función para llevar un seguimiento de las compras, como agregar productos a un carrito, etc.
-    alert(`Has comprado el producto ${productoId}`);
+
+    var cementerio = document.querySelector('.cementerio');
+
+    // Obtener todos los elementos con clase "item" dentro de la tienda
+    var items = cementerio.querySelectorAll('.item');
+
+    // Crear una lista local para almacenar los elementos de la tienda
+    var listaCementerio = JSON.parse(localStorage.getItem('CementerioElements')) || [];
+    //var listaCementerio = [];
+    localStorage.setItem('CementerioElements', JSON.stringify(listaCementerio));
+
+    if (listaCementerio.length === 0) {
+            items.forEach(function (item, index) {
+            var imagenPrincipal = item.querySelector('img').src;
+            var nombre = item.querySelector('.nombre').textContent;
+            var fechamuerte = item.querySelector('.fechamuerte').textContent;
+            
+
+            var elementoCementerio = {
+                imagenPrincipal: imagenPrincipal,
+                nombre : nombre,
+                fechamuerte: fechamuerte
+            };
+
+            listaCementerio.push(elementoCementerio);
+        });
+
     }
+    localStorage.setItem('CementerioElements', JSON.stringify(listaCementerio));
+    console.log(listaCementerio);
+
+    window.onload = function() {
+        
+        function elementYaExisteEnMascota(elementData) {
+            var CementerioContainer = document.querySelector('.cementerio');
+            var items = CementerioContainer.querySelectorAll('.item');
+
+            for (var i = 0; i < items.length; i++) {
+                var nombreElement = items[i].querySelector('.nombre');
+                if (nombreElement.textContent === elementData.nombre) {
+                    return true; // El elemento ya existe en la ventana "mascota.html"
+                }
+            }
+
+            return false; // El elemento no existe en la ventana "mascota.html"
+        }
+
+
+        function cargarElementosGuardados() {
+            var CementerioElementsContainer = document.querySelector('.cementerio');
+            var listaCementerio = JSON.parse(localStorage.getItem('CementerioElements')) || [];
+            CementerioElementsContainer.innerHTML = '';
+
+            listaCementerio.forEach(function (elementData) {
+                if (!elementYaExisteEnMascota(elementData)) {
+                    var nuevoItem = document.createElement('div');
+                    nuevoItem.classList.add('item');
+                    var nuevoItem = document.createElement('div');
+                        nuevoItem.classList.add('item');
+
+                var nuevaImagen = document.createElement('img');
+                nuevaImagen.src = elementData.imagenPrincipal;
+                nuevoItem.appendChild(nuevaImagen);
+
+                var nuevoNombre = document.createElement('p');
+                nuevoNombre.classList.add('nombre');
+                nuevoNombre.textContent = elementData.nombre;
+                nuevoItem.appendChild(nuevoNombre);
+
+                var nuevoFecha = document.createElement('p');
+                nuevoFecha.classList.add('fechamuerte');
+                nuevoFecha.textContent = elementData.fechaCementerio;
+                nuevoItem.appendChild(nuevoFecha);
+
+                CementerioElementsContainer.appendChild(nuevoItem);
+
+        }
+
+        });
+        } 
+
+        cargarElementosGuardados();
+    }
+
+                
+    //agregarElementoAlCementerio();
+
+    function agregarElementoAlCementerio() {
+            // Recupera los datos necesarios desde donde sea necesario, por ejemplo, desde localStorage
+            var imagenPrincipalSrc = localStorage.getItem('imagenPrincipalCementerio');
+            var nombrePrincipalSrc = localStorage.getItem('nombrePrincipalCementerio');
+            var fechaCementerio = localStorage.getItem('fechaCementerio');
+
+            // Crea un nuevo elemento y agrega los datos
+            var nuevoElemento = document.createElement('div');
+            nuevoElemento.classList.add('item');
+            
+            // Agrega la imagen
+            var imagen = document.createElement('img');
+            imagen.src = imagenPrincipalSrc;
+            imagen.alt = 'Producto en el cementerio';
+            nuevoElemento.appendChild(imagen);
+
+            // Agrega el nombre
+            var nombre = document.createElement('p');
+            nombre.classList.add('nombre');
+            nombre.textContent = nombrePrincipalSrc;
+            nuevoElemento.appendChild(nombre);
+
+            // Agrega la fecha
+            var fechamuerte = document.createElement('p');
+            fechamuerte.classList.add('fechamuerte');
+            fechamuerte.textContent = fechaCementerio;
+            nuevoElemento.appendChild(fechamuerte);
+
+            // Agrega el nuevo elemento al contenedor sin borrar los elementos anteriores
+            var cementerioContainer = document.getElementById('cementerioContainer');
+            cementerioContainer.appendChild(nuevoElemento);
+
+            var CementerioContainer = document.querySelector('.cementerio');
+            CementerioContainer.appendChild(nuevoElemento);
+
+            // Almacena la información del nuevo elemento localmente
+            listaCementerio.push({
+                imagenPrincipal:  localStorage.getItem('imagenPrincipalCementerio'),
+                nombre:  localStorage.getItem('nombrePrincipalCementerio'),
+                fechaCementerio: localStorage.getItem('fechaCementerio'),
+            });
+            localStorage.setItem('CementerioElements', JSON.stringify(listaCementerio));
+
+    }
+
+
+
+
+
 
 
 </script>
@@ -209,9 +332,6 @@
 
     }
 
-    function cementerio(){
-        window.location.href = "cementerio.html";
-    }
 
     function mascota(){
         window.location.href = "mascota.html";
